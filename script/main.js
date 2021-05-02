@@ -50,17 +50,17 @@
                 e.preventDefault();
                 myApp.cargaMatrizSimplex();
                 $("#appentable *").remove();
-                do{
-                    myApp.identificaColumnaPivote();
+                //do{
+                   // myApp.identificaColumnaPivote();
                     myApp.creaTabla(myApp.constVars.matrizvariables);
 
-                    myApp.identificaFilaPivote();
+                   /* myApp.identificaFilaPivote();
                     myApp.convertFilaPivote();
                     myApp.convertrestofilas();
 
-                    myApp.creaTabla(myApp.constVars.matrizvariables);
+                    myApp.creaTabla(myApp.constVars.matrizvariables);*/
 
-                } while (myApp.buscaValorNegativo());
+                //} while (myApp.buscaValorNegativo());
             });
 
 
@@ -147,7 +147,7 @@
             myApp.constVars.matrizvariables[0][myApp.constVars.matrizvariables[0].length-1]=0;
 
             myApp.tags.fobjetivo.find('tr').find('td').find('input').each(function(e){
-                myApp.constVars.matrizvariables[0][e+1] = parseFloat(this.value);
+                myApp.constVars.matrizvariables[0][e+1] = parseFloat("-" + this.value);
             });
 
             myApp.tags.tablares.find('tr').each(function(n){
@@ -289,6 +289,10 @@
             var celltablez = document.createElement('th');
             var celltabloasol = document.createElement('th');
 
+            var celltableNula = document.createElement('th');
+            celltableNula.appendChild(document.createTextNode("-"));
+            rowhead.appendChild(celltableNula); 
+
             celltablez.appendChild(document.createTextNode("Z"));
             rowhead.appendChild(celltablez);
 
@@ -308,15 +312,36 @@
             rowhead.appendChild(celltabloasol);
             tableBody.appendChild(rowhead);
 
-            tableData.forEach(function(rowData) {
+            tableData.forEach(function(rowData, filaIndex) {
               var row = document.createElement('tr');
-              rowData.forEach(function(cellData) {
+              rowData.forEach(function(cellData, indexDatos) {
+                
+                var cellHead = document.createElement('td');                
+                if(filaIndex == 0 && indexDatos == 0){
+                    var cellHead = document.createElement('td');
+                    var divHead = document.createElement('div');
+                    var strongTag = document.createElement('strong');
+                    strongTag.appendChild(document.createTextNode("Z"));
+                    divHead.appendChild(strongTag);
+                    cellHead.appendChild(divHead);
+                    row.appendChild(cellHead);
+                }else if(filaIndex > 0 && indexDatos == 0){
+                    var cellHead = document.createElement('td');
+                    var divHead = document.createElement('div');
+                    var strongTag = document.createElement('strong');
+                    strongTag.appendChild(document.createTextNode("S"+filaIndex));
+                    divHead.appendChild(strongTag);
+                    cellHead.appendChild(divHead);                    
+                    row.appendChild(cellHead);
+                }
+                
+
                 var cell = document.createElement('td');
-                var cellinfo = myApp.decimaltoFraction(cellData,10000);
-                var textemp="";
-                if (cellinfo.denom!=1){
+                var cellinfo = cellData;//myApp.decimaltoFraction(cellData,10000);
+                var textemp=cellData;
+                /*if (cellinfo.denom!=1){
                   textemp= cellinfo.numer+"/"+cellinfo.denom
-                }else{ textemp =cellinfo.numer; }
+                }else{ textemp =cellinfo.numer; }*/
                 cell.appendChild(document.createTextNode(textemp));
                 row.appendChild(cell);
               });
